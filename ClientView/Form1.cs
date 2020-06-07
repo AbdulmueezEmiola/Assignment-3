@@ -24,14 +24,15 @@ namespace ClientView
             connector = new ClientConnector(port, address);
             connector.Connect();
             InitializeComponent();
-            timer1.Interval = 1000;
+            timer1.Interval = 3000;
             timer1.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             var source = new BindingSource();
-            source.DataSource = connector.messages.Select(x => new { Messages = x }).ToList();
+            source.DataSource = connector.messages;
+            dataGridView1.DataSource = source;          
             connector.ReceiveMessage(tokenSource.Token);                       
         }
 
@@ -39,14 +40,15 @@ namespace ClientView
         {
             if (textBox1.TextLength != 0)
             {
-                connector.SendAsync(textBox1.Text);
+                ClientLibrary.Message message = new ClientLibrary.Message(nameTextBox.Text, textBox1.Text, DateTime.Now);
+                connector.SendAsync(message);
             }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             var source = new BindingSource();
-            source.DataSource = connector.messages.Select(x => new { Messages = x }).ToList();
+            source.DataSource = connector.messages;
             dataGridView1.DataSource = source;
         }
     }

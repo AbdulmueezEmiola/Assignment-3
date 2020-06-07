@@ -36,8 +36,7 @@ namespace ClientLibraryTest
             SendToClientOfListener();
             client.ReceiveMessage(source.Token);
             Thread.Sleep(10000);
-            source.Cancel();
-            List<string> lists = client.messages;
+            source.Cancel();            
         }
         
         public async Task SendToClientOfListener()

@@ -30,7 +30,8 @@ namespace ServerLibraryTest
         public async Task TestAsync()
         {
             Thread.Sleep(10000);
-            connector.Broadcast("Hello here");
+            var bytes = Encoding.UTF8.GetBytes("Hello here");
+            connector.Broadcast(bytes);
             Thread.Sleep(10000);
             await ReadClientAsync();
             await ReadClient2Async();

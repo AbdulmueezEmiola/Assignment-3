@@ -51,28 +51,27 @@ namespace ServerLibrary
                         var requestStream = client.GetStream();
                         if (requestStream.DataAvailable)
                         {
-                            byte[] bytes = new byte[256];
+                            byte[] bytes = new byte[1024];                            
                             await requestStream.ReadAsync(bytes, 0, bytes.Length);
-                            var requestMessage = Encoding.UTF8.GetString(bytes).Replace("\0", string.Empty);
-                            Broadcast(requestMessage);
+                            Broadcast(bytes);
                         }
+                        
                     });
                 }
             });
             task.Start();
         }
-        public void Broadcast(string message)
+        public void Broadcast(byte[] bytes)
         {
             foreach(TcpClient client in clients)
             {
-                sendToClient(message, client);
+                sendToClient(bytes, client);
             }
         }
-        private async void sendToClient(string message,TcpClient client)
+        private async void sendToClient(byte[] bytes,TcpClient client)
         {
             var stream = client.GetStream();
-            var bytes = Encoding.UTF8.GetBytes(message);
-            await stream.WriteAsync(bytes, 0, bytes.Length);
+            await stream.WriteAsync(bytes, 0, bytes.Length);            
         }
          ~ServerConnector()
         {
@@ -84,3 +83,4 @@ namespace ServerLibrary
         }
     }
 }
+
